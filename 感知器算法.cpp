@@ -2,25 +2,25 @@
 #include<math.h>
 #include<stdlib.h>
 using namespace std;
-#define COUNT 20  //Ñù±¾ÑµÁ·´ÎÊı
-#define DIMEN  5  // ÊäÈëÑù±¾Î¬¶È
+#define COUNT 20  //æ ·æœ¬è®­ç»ƒæ¬¡æ•°
+#define DIMEN  5  // è¾“å…¥æ ·æœ¬ç»´åº¦
 int score[COUNT][DIMEN];
 float score1,score2,score3,score4,score5,aver;
-double x[COUNT][DIMEN]; 	// ÊäÈëÑù±¾ÑµÁ·Êı¾İ
-int y[COUNT];              // ÑµÁ·Êä³ö
-int d[COUNT];              // ÀíÏëÊä³ö
-double W[COUNT];           // È¨Öµ¾ØÕó
-double thres;               // ãĞÖµ
-double eps = 0.0001;       // ½øĞĞÊÕÁ²ÅĞ¶ÏµÄÌõ¼ş
-double s, dp, ep;   // dpÎªÀíÏëÊä³öÓëÊµ¼ÊÊä³öµÄ²î£¬epÎª¾ù·½Îó²î
-double deta = 0.2;          // Ñ§Ï°Òò×Ó
-double r[1] = {3.0};            // Ëæ»úÊıÖÖ×Ó
+double x[COUNT][DIMEN]; 	// è¾“å…¥æ ·æœ¬è®­ç»ƒæ•°æ®
+int y[COUNT];              // è®­ç»ƒè¾“å‡º
+int d[COUNT];              // ç†æƒ³è¾“å‡º
+double W[COUNT];           // æƒå€¼çŸ©é˜µ
+double thres;               // é˜ˆå€¼
+double eps = 0.0001;       // è¿›è¡Œæ”¶æ•›åˆ¤æ–­çš„æ¡ä»¶
+double s, dp, ep;   // dpä¸ºç†æƒ³è¾“å‡ºä¸å®é™…è¾“å‡ºçš„å·®ï¼Œepä¸ºå‡æ–¹è¯¯å·®
+double deta = 0.2;          // å­¦ä¹ å› å­
+double r[1] = {3.0};            // éšæœºæ•°ç§å­
 int i, j, k;
 
-void train() {
-	FILE *fpRead=fopen("scores.txt","r");
+void train() {//è®­ç»ƒæ–¹æ³•
+	FILE *fpRead=fopen("scores.txt","r");//è®­ç»ƒé›†æ•°æ®è¯»å–
 	if(fpRead==NULL) exit(0);
-	fscanf(fpRead,"%*[^\n]");  //Ìø¹ıµÚÒ»ĞĞ
+	fscanf(fpRead,"%*[^\n]");  //è·³è¿‡ç¬¬ä¸€è¡Œ
 	for(i=0; i<20; i++) {
 		fscanf(fpRead,"%f\t%f\t%f\t%f\t%f",&score1,&score2,&score3,&score4,&score5);
 		x[i][1]=score1/100;
@@ -36,11 +36,11 @@ void train() {
 			d[i] = 0;
 		printf("%d\n",d[i]);
 	}
-	for(j = 0; j < DIMEN; j++)         //¶ÔÈ¨Öµ¡¢ãĞÖµ½øĞĞ³õÊ¼»¯£¬Ëæ»ú²úÉú[-1,1]¼äµÄÊı
+	for(j = 0; j < DIMEN; j++)         //å¯¹æƒå€¼ã€é˜ˆå€¼è¿›è¡Œåˆå§‹åŒ–ï¼Œéšæœºäº§ç”Ÿ[-1,1]é—´çš„æ•°
 		W[j] = (2.0 * rand() / RAND_MAX - 1) ;
 	thres = (2.0 * rand() / RAND_MAX - 1) ;
 //	thres = 0.5;
-	k = 0;                        //µü´ú´ÎÊı
+	k = 0;                        //è¿­ä»£æ¬¡æ•°
 	while(1) {
 		ep = 0;
 		for(i = 0; i < COUNT; i++) {
@@ -53,7 +53,7 @@ void train() {
 			else
 				y[i] = 0;
 			dp = (double)(d[i] - y[i]);
-			for(j = 0; j < DIMEN; j++) { //¸üĞÂÈ¨Öµ¡¢ãĞÖµ
+			for(j = 0; j < DIMEN; j++) { //æ›´æ–°æƒå€¼ã€é˜ˆå€¼
 				W[j] = W[j] + deta * dp * x[i][j];
 				thres = thres - deta * dp;
 			}
@@ -64,17 +64,32 @@ void train() {
 		if(ep <= eps)     
 			break;
 	}
+	printf("è¿­ä»£æ¬¡æ•°=%d\n",k);
+	printf("æƒå€¼ï¼š\n");
+	for(j = 0; j < DIMEN; j++)
+		printf("%f\n",W[j]);
+	printf("é˜ˆå€¼ï¼š\n");
+	printf("%f\n",thres);
+	printf("æˆç»©ä¼˜ç§€çš„å­¦ç”Ÿç¼–å·ï¼š");
+	for(j = 0; j < COUNT; j++)
+		if ((double)y[j] == 1)
+			printf("%d ",j+1);
+	printf("\næˆç»©åˆæ ¼çš„å­¦ç”Ÿç¼–å·ï¼š");
+	for(j = 0; j < COUNT; j++)
+		if ((double)y[j] == 0)
+			printf("%d ",j+1);
+//		printf("%d\n",y[j]) ;
 }
 
-void test () {
-	double xt[20][5];          //²âÊÔÊı¾İ
-	int dt[20];                //ÀíÏëÊı¾İÊä³ö
-	int yt[20];               //²âÊÔÊä³ö
-	int count = 0;          //²âÊÔÕıÈ·µÄÊıÄ¿
-	double Rate;             //ÕıÈ··ÖÀàÂÊ
-	FILE *fpRead1=fopen("scores-test.txt","r");
+void test () {//æµ‹è¯•æ–¹æ³•
+	double xt[20][5];          //æµ‹è¯•æ•°æ®
+	int dt[20];                //ç†æƒ³æ•°æ®è¾“å‡º
+	int yt[20];               //æµ‹è¯•è¾“å‡º
+	int count = 0;          //æµ‹è¯•æ­£ç¡®çš„æ•°ç›®
+	double Rate;             //æ­£ç¡®åˆ†ç±»ç‡
+	FILE *fpRead1=fopen("scores-test.txt","r");//æµ‹è¯•é›†æ•°æ®è¯»å–
 	if(fpRead1==NULL) exit(0);
-	fscanf(fpRead1,"%*[^\n]");  //Ìø¹ıµÚÒ»ĞĞ
+	fscanf(fpRead1,"%*[^\n]");  //è·³è¿‡ç¬¬ä¸€è¡Œ
 	for(i=0; i<20; i++) {
 		fscanf(fpRead1,"%f\t%f\t%f\t%f\t%f",&score1,&score2,&score3,&score4,&score5);
 		xt[i][1]=score1/100;
@@ -89,7 +104,7 @@ void test () {
 			dt[i] = 0;
 //		printf("%d\n",d[i]);
 		s = 0;
-		for(j = 0; j < DIMEN; j++)                          //¼ÆËã²âÊÔÊä³ö
+		for(j = 0; j < DIMEN; j++)                          //è®¡ç®—æµ‹è¯•è¾“å‡º
 			s += W[j] * xt[i][j];
 		s = s - thres;
 		if(s >= 0.6)
@@ -100,38 +115,23 @@ void test () {
 		if(dt[i] == y[i])
 			count++;
 	}
-	printf("\n²âÊÔÊı¾İ½á¹û£º\n");
-	printf("ÕıÈ··ÖÀà¸öÊı=%d\n",count);
+	printf("\næµ‹è¯•æ•°æ®ç»“æœï¼š\n");
+	printf("æ­£ç¡®åˆ†ç±»ä¸ªæ•°=%d\n",count);
 	Rate = (double)(count / (double)COUNT);
-	printf("·ÖÀàÕıÈ·ÂÊ£º\n");
+	printf("åˆ†ç±»æ­£ç¡®ç‡ï¼š\n");
 	printf("%f",Rate*100);
-	printf("\n²âÊÔ×é³É¼¨ÓÅĞãµÄÑ§Éú±àºÅ£º");
+	printf("\næµ‹è¯•ç»„æˆç»©ä¼˜ç§€çš„å­¦ç”Ÿç¼–å·ï¼š");
 	for(j = 0; j < COUNT; j++)
 		if ((double)y[j] == 1)
 			printf("%d ",j+1);
-	printf("\n²âÊÔ×é³É¼¨ºÏ¸ñµÄÑ§Éú±àºÅ£º");
+	printf("\næµ‹è¯•ç»„æˆç»©åˆæ ¼çš„å­¦ç”Ÿç¼–å·ï¼š");
 	for(j = 0; j < COUNT; j++)
 		if ((double)y[j] == 0)
 			printf("%d ",j+1);
 };
 
 int main() {
-	train();
-	printf("µü´ú´ÎÊı=%d\n",k);
-	printf("È¨Öµ£º\n");
-	for(j = 0; j < DIMEN; j++)
-		printf("%f\n",W[j]);
-	printf("ãĞÖµ£º\n");
-	printf("%f\n",thres);
-	printf("³É¼¨ÓÅĞãµÄÑ§Éú±àºÅ£º");
-	for(j = 0; j < COUNT; j++)
-		if ((double)y[j] == 1)
-			printf("%d ",j+1);
-	printf("\n³É¼¨ºÏ¸ñµÄÑ§Éú±àºÅ£º");
-	for(j = 0; j < COUNT; j++)
-		if ((double)y[j] == 0)
-			printf("%d ",j+1);
-//		printf("%d\n",y[j]) ;
+	train();	
 	test();
 	cout<<endl;
 }
