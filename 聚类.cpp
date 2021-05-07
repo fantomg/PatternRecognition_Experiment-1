@@ -11,13 +11,13 @@ float score1,score2,score3,score4,score5;
 
 
 
-void cluster_r(float(*cluster)(int ,int)) { //³É¼¨×ª»¯ÏàËÆ¾ØÕó
+void cluster_r(float(*cluster)(int ,int)) { //æˆç»©è½¬åŒ–ç›¸ä¼¼çŸ©é˜µ
 	for(int i=0; i<N; i++)
 		for(int j=0; j<N; j++)
 			r[i][j]=cluster(i,j);
 }
 
-void cluster_r_tran() { //¼ÆËã´«µİ±Õ°ü
+void cluster_r_tran() { //è®¡ç®—ä¼ é€’é—­åŒ…
 	while(1) {
 		float a[N][N];
 		for(int i=0; i<N; i++) {
@@ -45,7 +45,7 @@ void cluster_r_tran() { //¼ÆËã´«µİ±Õ°ü
 	}
 }
 
-void cluster_r_r(float fr) {//¾ÛÀà 
+void cluster_r_r(float fr) {//èšç±» 
 	int a[N][N];
 	for(int i=0; i<N; i++)
 		for(int j=0; j<N; j++) {
@@ -71,7 +71,7 @@ void cluster_r_r(float fr) {//¾ÛÀà
 	}
 }
 
-float cluster_max() { //¼ÆËã²¿·Ö×î´óÖµ
+float cluster_max() { //è®¡ç®—éƒ¨åˆ†æœ€å¤§å€¼
 	float s=0,r=0;
 	for(int i=0; i<N; i++) {
 		r=0;
@@ -82,7 +82,7 @@ float cluster_max() { //¼ÆËã²¿·Ö×î´óÖµ
 	return s;
 }
 
-float cluster_r_fabs(int i,int j) { //¾ø¶ÔÖµ¼õÊı·¨
+float cluster_r_fabs(int i,int j) { //ç»å¯¹å€¼å‡æ•°æ³•
 	if(i==j)
 		return 1;
 	float s=0,c=cluster_max()/5;
@@ -91,23 +91,23 @@ float cluster_r_fabs(int i,int j) { //¾ø¶ÔÖµ¼õÊı·¨
 	return 1-s/c;
 }
 
-float cluster_r_mm(int i,int j) { //×î´ó×îĞ¡·¨
+float cluster_r_mm(int i,int j) { //æœ€å¤§æœ€å°æ³•
 	if(i==j)
 		return 1;
 	float a=0,b=0;
 	for(int k=0; k<M; k++) {
-		a+=score[i][k]>score[j][k]?score[j][k]:score[i][k];//×îĞ¡
-		b+=score[i][k]>score[j][k]?score[i][k]:score[j][k];//×î´ó
+		a+=score[i][k]>score[j][k]?score[j][k]:score[i][k];//æœ€å°
+		b+=score[i][k]>score[j][k]?score[i][k]:score[j][k];//æœ€å¤§
 	}
 	return a/b;
 }
 
 void file_read(float score1,float score2,float score3,float score4,float score5) {
-	// ¶ÁÊı¾İ
+	// è¯»æ•°æ®
 	int i;
 	FILE *fpRead=fopen("scores.txt","r");
 	if(fpRead==NULL) exit(0);
-	fscanf(fpRead,"%*[^\n]");  //Ìø¹ıµÚÒ»ĞĞ
+	fscanf(fpRead,"%*[^\n]");  //è·³è¿‡ç¬¬ä¸€è¡Œ
 	for(i=0; i<N; i++) {
 		fscanf(fpRead,"%f\t%f\t%f\t%f\t%f",&score1,&score2,&score3,&score4,&score5);
 		score[i][1]=score1;
@@ -125,7 +125,7 @@ void file_read(float score1,float score2,float score3,float score4,float score5)
 int main() {
 	file_read(score1,score2,score3,score4,score5);
 	cout<<endl;
-	printf("×î´ó×îĞ¡¾àÀë¾ÛÀà£º\n");
+	printf("è®¡ç®—æœ€å¤§æœ€å°è·ç¦»å±‚æ¬¡èšç±»ï¼š\n");
 	cluster_r(cluster_r_mm);
 //	for(int i=0; i<N; i++) {
 //		for(int j=0; j<N; j++)
@@ -134,11 +134,11 @@ int main() {
 //	}
 //	cluster_r_tran();
 	for(float z=0.9; z>0.6; z-=0.1) {
-		cout<<"r="<<z<<"Ê±µÄ¾ÛÀà½á¹ûÎª:"<<endl;
+		cout<<"r="<<z<<"æ—¶çš„èšç±»ç»“æœä¸º:"<<endl;
 		cluster_r_r(z);
 		cout<<endl;
 	}
-	printf("¾ø¶ÔÖµ¼õÊı·¨¾ÛÀà£º\n");
+	printf("è®¡ç®—ç»å¯¹å€¼å‡æ•°å±‚æ¬¡èšç±»ï¼š\n");
 	cluster_r(cluster_r_fabs);
 //	for(int i=0; i<N; i++) {
 //		for(int j=0; j<N; j++)
@@ -156,7 +156,7 @@ int main() {
 //	cout<<endl;
 
 	for(float z=0.8; z>0.6; z-=0.05) {
-		cout<<"r="<<z<<"Ê±µÄ¾ÛÀà½á¹ûÎª:"<<endl;
+		cout<<"r="<<z<<"æ—¶çš„èšç±»ç»“æœä¸º:"<<endl;
 		cluster_r_r(z);
 		cout<<endl;
 	}
